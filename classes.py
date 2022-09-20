@@ -22,7 +22,6 @@ WarriorClass = UnitClass(
     armor=4,
     skill=FuryPunch()
 )
-# TODO Инициализируем экземпляр класса UnitClass и присваиваем ему необходимые значения аттрибуотов
 
 ThiefClass = UnitClass(
     name="Вор",
@@ -33,7 +32,6 @@ ThiefClass = UnitClass(
     armor=2,
     skill=HardShot()
 )
-# TODO действуем так же как и с войном
 
 unit_classes = {
     ThiefClass.name: ThiefClass,

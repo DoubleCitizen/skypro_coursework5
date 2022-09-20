@@ -23,13 +23,13 @@ class Weapon:
     stamina_per_hit: float
 
     @property
-    def damage(self):
+    def damage(self) -> float:
         return round(uniform(self.min_damage, self.max_damage), 1)
 
 
 @dataclass
 class EquipmentData:
-    # TODO содержит 2 списка - с оружием и с броней
+    # содержит 2 списка - с оружием и с броней
     weapons: List[Weapon]
     armors: List[Armor]
 
@@ -40,24 +40,24 @@ class Equipment:
         self.equipment = self._get_equipment_data()
 
     def get_weapon(self, weapon_name) -> Weapon:
-        # TODO возвращает объект оружия по имени
+        # возвращает объект оружия по имени
         return next(filter(lambda weapon: weapon.name == weapon_name, self.equipment.weapons))
 
     def get_armor(self, armor_name) -> Armor:
-        # TODO возвращает объект брони по имени
+        # возвращает объект брони по имени
         return next(filter(lambda armor: armor.name == armor_name, self.equipment.armors))
 
     def get_weapons_names(self) -> list:
-        # TODO возвращаем список с оружием
+        # возвращаем список с оружием
         return [weapon.name for weapon in self.equipment.weapons]
 
     def get_armors_names(self) -> list:
-        # TODO возвращаем список с броней
+        # возвращаем список с броней
         return [armor.name for armor in self.equipment.armors]
 
     @staticmethod
     def _get_equipment_data() -> EquipmentData:
-        # TODO этот метод загружает json в переменную EquipmentData
+        # этот метод загружает json в переменную EquipmentData
         with open("./data/equipment.json", encoding='utf-8') as equipment_file:
             data = json.load(equipment_file)
         equipment_schema = marshmallow_dataclass.class_schema(EquipmentData)

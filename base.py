@@ -1,3 +1,5 @@
+from typing import Optional
+
 from unit import BaseUnit
 
 
@@ -19,14 +21,11 @@ class Arena(metaclass=BaseSingleton):
     battle_result = "Бой не завершён"
 
     def start_game(self, player: BaseUnit, enemy: BaseUnit):
-        # TODO НАЧАЛО ИГРЫ -> None
-        # TODO присваиваем экземпляру класса аттрибуты "игрок" и "противник"
-        # TODO а также выставляем True для свойства "началась ли игра"
         self.player = player
         self.enemy = enemy
         self.game_is_running = True
 
-    def _check_players_hp(self):
+    def _check_players_hp(self) -> Optional[str]:
         if self.player.hp <= 0:
             self.battle_result = "Вы проиграли"
             return self._end_game()
@@ -41,7 +40,7 @@ class Arena(metaclass=BaseSingleton):
         self.player.add_stamina(self.STAMINA_PER_ROUND)
         self.enemy.add_stamina(self.STAMINA_PER_ROUND)
 
-    def next_turn(self):
+    def next_turn(self) -> Optional[str]:
         result = self._check_players_hp()
         if result:
             return result
@@ -49,17 +48,17 @@ class Arena(metaclass=BaseSingleton):
         result = self.enemy.hit(self.player)
         return result
 
-    def _end_game(self):
+    def _end_game(self) -> Optional[str]:
         self._instances = {}
         self.game_is_running = False
         return self.battle_result
 
-    def player_hit(self):
+    def player_hit(self) -> str:
         result = self.player.hit(self.enemy)
         self.next_turn()
         return result
 
-    def player_use_skill(self):
+    def player_use_skill(self) -> str:
         result = self.player.use_skill(self.enemy)
         self.next_turn()
         return result
