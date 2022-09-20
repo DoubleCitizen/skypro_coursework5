@@ -39,11 +39,11 @@ class Equipment:
     def __init__(self):
         self.equipment = self._get_equipment_data()
 
-    def get_weapon(self, weapon_name) -> Weapon:
+    def get_weapon(self, weapon_name: str) -> Weapon:
         # возвращает объект оружия по имени
         return next(filter(lambda weapon: weapon.name == weapon_name, self.equipment.weapons))
 
-    def get_armor(self, armor_name) -> Armor:
+    def get_armor(self, armor_name: str) -> Armor:
         # возвращает объект брони по имени
         return next(filter(lambda armor: armor.name == armor_name, self.equipment.armors))
 
