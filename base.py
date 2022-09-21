@@ -4,9 +4,9 @@ from unit import BaseUnit
 
 
 class BaseSingleton(type):
-    _instances = {}
+    _instances: dict = {}
 
-    def __call__(cls, *args, **kwargs):
+    def __call__(cls, *args, **kwargs) -> Optional[dict]:
         if cls not in cls._instances:
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
@@ -20,7 +20,7 @@ class Arena(metaclass=BaseSingleton):
     game_is_running = False
     battle_result = "Бой не завершён"
 
-    def start_game(self, player: BaseUnit, enemy: BaseUnit):
+    def start_game(self, player: BaseUnit, enemy: BaseUnit) -> None:
         self.player = player
         self.enemy = enemy
         self.game_is_running = True
@@ -28,15 +28,15 @@ class Arena(metaclass=BaseSingleton):
     def _check_players_hp(self) -> Optional[str]:
         if self.player.hp <= 0:
             self.battle_result = "Вы проиграли"
-            return self._end_game()
+            return self.end_game()
         elif self.enemy.hp <= 0:
             self.battle_result = "Вы победили!"
-            return self._end_game()
+            return self.end_game()
         elif self.player.hp <= 0 and self.enemy.hp <= 0:
             self.battle_result = "Ничья!"
-            return self._end_game()
+            return self.end_game()
 
-    def _stamina_regeneration(self):
+    def _stamina_regeneration(self) -> None:
         self.player.add_stamina(self.STAMINA_PER_ROUND)
         self.enemy.add_stamina(self.STAMINA_PER_ROUND)
 
@@ -48,8 +48,7 @@ class Arena(metaclass=BaseSingleton):
         result = self.enemy.hit(self.player)
         return result
 
-    def _end_game(self) -> Optional[str]:
-        self._instances = {}
+    def end_game(self) -> Optional[str]:
         self.game_is_running = False
         return self.battle_result
 

@@ -1,5 +1,3 @@
-from abc import ABC
-
 from flask import Flask, render_template, request, redirect, url_for
 
 from equipment import Equipment
@@ -14,7 +12,7 @@ heroes = {
     "enemy": EnemyUnit(name="Компьютер", unit_class=ThiefClass)
 }
 
-arena: Arena = Arena() # инициализируем класс арены
+arena: Arena = Arena()  # инициализируем класс арены
 
 
 @app.route("/")
@@ -30,6 +28,7 @@ def start_fight():
     arena.start_game(player=heroes['player'], enemy=heroes['enemy'])
     return render_template("fight.html", heroes=heroes, result="Начало боя")
 
+
 @app.route("/fight/hit")
 def hit():
     # кнопка нанесения удара
@@ -42,8 +41,6 @@ def hit():
     else:
         result = arena.next_turn()
         return render_template('fight.html', heroes=heroes, result=result)
-        # return redirect(url_for('end_fight'))
-
 
 
 @app.route("/fight/use-skill")
@@ -56,7 +53,6 @@ def use_skill():
     else:
         result = arena.next_turn()
         return render_template('fight.html', heroes=heroes, result=result)
-        # return redirect(url_for('end_fight'))
 
 
 @app.route("/fight/pass-turn")
@@ -70,13 +66,12 @@ def pass_turn():
     else:
         result = arena.next_turn()
         return render_template('fight.html', heroes=heroes, result=result)
-        # return redirect(url_for('end_fight'))
 
 
 @app.route("/fight/end-fight")
 def end_fight():
     # кнопка завершить игру - переход в главное меню
-    arena._end_game()
+    arena.end_game()
     return render_template("index.html", heroes=heroes)
 
 
@@ -101,6 +96,7 @@ def choose_hero():
         heroes['player'] = new_player
         return redirect(url_for("choose_enemy"))
 
+
 @app.route("/choose-enemy/", methods=['post', 'get'])
 def choose_enemy():
     if request.method == 'GET':
@@ -122,6 +118,7 @@ def choose_enemy():
         new_enemy.equip_weapon(Equipment().get_weapon(weapon_name))
         heroes['enemy'] = new_enemy
         return redirect(url_for("start_fight"))
+
 
 if __name__ == "__main__":
     app.run()

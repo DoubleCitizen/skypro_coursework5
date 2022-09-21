@@ -1,9 +1,9 @@
 from __future__ import annotations
-from abc import ABC, abstractmethod
-from equipment import Equipment, Weapon, Armor
+from abc import ABC
+from equipment import Weapon, Armor
 from classes import UnitClass
-from random import randint, uniform
-from typing import Optional, List
+from random import uniform
+from typing import Optional
 
 
 class BaseUnit(ABC):
@@ -15,14 +15,14 @@ class BaseUnit(ABC):
         """
         При инициализации класса Unit используем свойства класса UnitClass
         """
-        self.name = name
-        self.unit_class = unit_class
-        self.hp = unit_class.max_health
-        self.stamina = unit_class.max_stamina
+        self.name: str = name
+        self.unit_class: UnitClass = unit_class
+        self.hp: float = unit_class.max_health
+        self.stamina: float = unit_class.max_stamina
         self.weapon = None
         self.armor = None
-        self._is_skill_used = False
-        self._text_list = [
+        self._is_skill_used: bool = False
+        self.text_list = [
             ["используя", "пробивает", "соперника и наносит", "урона."],
             ["используя", "наносит удар, но", "cоперника его останавливает"],
             ["попытался использовать", ", но у него не хватило выносливости."]
@@ -46,7 +46,7 @@ class BaseUnit(ABC):
         self.armor = armor
         return f"{self.name} экипирован броней {self.armor.name}"
 
-    def _count_damage(self, target: BaseUnit) -> int:
+    def _count_damage(self, target: BaseUnit) -> float:
         self.stamina -= self.weapon.stamina_per_hit
         unit_damage = self.weapon.damage * self.unit_class.attack
         if target.stamina > target.armor.stamina_per_turn:
@@ -74,16 +74,21 @@ class BaseUnit(ABC):
         _name: str = self.name
         _weapon_name: str = self.weapon.name
         _target_armor_name: str = target.armor.name
+        text_1 = self.text_list[0]
+        text_2 = self.text_list[1]
+        text_3 = self.text_list[2]
 
         if self.stamina >= self.weapon.stamina_per_hit:
             damage = self._count_damage(target)
+            damage = round(damage, 1)
 
             if damage > 0:
-                return f"{_name} {self._text_list[0][0]} {_weapon_name} {self._text_list[0][1]} {_target_armor_name} {self._text_list[0][2]} {round(damage, 1)} {self._text_list[0][3]}"
+                return f"{_name} {text_1[0]} {_weapon_name} {text_1[1]}" \
+                       f" {_target_armor_name} {text_1[2]} {damage} {text_1[3]}"
             else:
-                return f"{_name} {self._text_list[1][0]} {_weapon_name} {self._text_list[1][1]} {_target_armor_name} {self._text_list[1][2]}"
+                return f"{_name} {text_2[0]} {_weapon_name} {text_2[1]} {_target_armor_name} {text_2[2]}"
         else:
-            return f"{_name} {self._text_list[2][0]} {_weapon_name}{self._text_list[2][1]}"
+            return f"{_name} {text_3[0]} {_weapon_name}{text_3[1]}"
 
     def use_skill(self, target: BaseUnit) -> str:
         """
@@ -97,11 +102,11 @@ class BaseUnit(ABC):
         if self._is_skill_used:
             return "Навык использован"
         else:
-            if self.unit_class.skill._is_stamina_enough:
+            if self.unit_class.skill.is_stamina_enough:
                 self._is_skill_used = True
             return self.unit_class.skill.use(user=self, target=target)
 
-    def add_stamina(self, stamina_point):
+    def add_stamina(self, stamina_point) -> None:
         stamina_growth = stamina_point * self.unit_class.stamina
         if self.stamina + stamina_growth > self.unit_class.max_stamina:
             self.stamina = self.unit_class.max_stamina
@@ -118,7 +123,7 @@ class PlayerUnit(BaseUnit):
         вызывается функция self._count_damage(target)
         а также возвращается результат в виде строки
         """
-        self._text_list = [
+        self.text_list = [
             ["используя", "пробивает", "соперника и наносит", "урона."],
             ["используя", "наносит удар, но", "cоперника его останавливает"],
             ["попытался использовать", ", но у него не хватило выносливости."]
@@ -142,7 +147,7 @@ class EnemyUnit(BaseUnit):
         if uniform(1, 100) in range(1, 10) and not self._is_skill_used:
             return self.use_skill(target)
 
-        self._text_list = [
+        self.text_list = [
             ["используя", "пробивает", "и наносит Вам", "урона."],
             ["используя", "наносит удар, но Ваш(а)", "его останавливает."],
             ["попытался использовать", ", но у него не хватило выносливости."]

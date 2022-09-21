@@ -36,7 +36,7 @@ class EquipmentData:
 
 class Equipment:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.equipment = self._get_equipment_data()
 
     def get_weapon(self, weapon_name: str) -> Weapon:
