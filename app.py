@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 heroes = {
     "player": PlayerUnit(name="Игрок", unit_class=WarriorClass),
-    "enemy": EnemyUnit(name="Компьютер", unit_class=ThiefClass)
+    "enemy": EnemyUnit(name="Компьютер", unit_class=ThiefClass),
 }
 
 arena: Arena = Arena()  # инициализируем класс арены
